@@ -1,6 +1,6 @@
 package hudson.plugins.sloccount.model.cloc;
 
-import javax.xml.bind.annotation.XmlElement;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import java.io.Serializable;
 
 /**
@@ -12,91 +12,65 @@ import java.io.Serializable;
 public class ClocHeader implements Serializable {
     private static final long serialVersionUID = 1;
 
-    @XmlElement(name = "cloc_url", type = ClocParameter.class)
-    private final ClocParameter clocUrl;
+    @XStreamAlias("cloc_url")
+    private String clocUrl;
 
-    @XmlElement(name = "cloc_version", type = ClocParameter.class)
-    private final ClocParameter clocVersion;
+    @XStreamAlias("cloc_version")
+    private String clocVersion;
 
-    @XmlElement(name = "elapsed_seconds", type = ClocParameter.class)
-    private final ClocParameter elapsedSeconds;
+    @XStreamAlias("elapsed_seconds")
+    private String elapsedSeconds;
 
-    @XmlElement(name = "n_files", type = ClocParameter.class)
-    private final ClocParameter filesCount;
+    @XStreamAlias("n_files")
+    private int filesCount;
 
-    @XmlElement(name = "n_lines", type = ClocParameter.class)
-    private final ClocParameter linesCount;
+    @XStreamAlias("n_lines")
+    private int linesCount;
 
-    @XmlElement(name = "files_per_second", type = ClocParameter.class)
-    private final ClocParameter filesPerSecond;
+    @XStreamAlias("files_per_second")
+    private String filesPerSecond;
 
-    @XmlElement(name = "lines_per_second", type = ClocParameter.class)
-    private final ClocParameter linesPerSecond;
+    @XStreamAlias("lines_per_second")
+    private String linesPerSecond;
 
-    @XmlElement(name = "report_file", type = ClocParameter.class)
-    private final ClocParameter reportFile;
-
-    /**
-     * Constructor.
-     * @param clocUrl URL of CLOC
-     * @param clocVersion version of CLOC
-     * @param elapsedSeconds time elapsed in seconds
-     * @param filesCount number of files
-     * @param linesCount number of lines
-     * @param filesPerSecond number of files per second
-     * @param linesPerSecond number of lines per second
-     * @param reportFile file with report
-     */
-    public ClocHeader(ClocParameter clocUrl, ClocParameter clocVersion,
-                      ClocParameter elapsedSeconds, ClocParameter filesCount,
-                      ClocParameter linesCount, ClocParameter filesPerSecond,
-                      ClocParameter linesPerSecond, ClocParameter reportFile) {
-        this.clocUrl = clocUrl;
-        this.clocVersion = clocVersion;
-        this.elapsedSeconds = elapsedSeconds;
-        this.filesCount = filesCount;
-        this.linesCount = linesCount;
-        this.filesPerSecond = filesPerSecond;
-        this.linesPerSecond = linesPerSecond;
-        this.reportFile = reportFile;
-    }
+    @XStreamAlias("report_file")
+    private String reportFile;
 
     /**
      * This constructor is required by JAXB.
      */
     public ClocHeader() {
-        this(null, null, null, null, null, null, null, null);
     }
 
-    public ClocParameter getClocUrl() {
+    public String getClocUrl() {
         return clocUrl;
     }
 
-    public ClocParameter getClocVersion() {
+    public String getClocVersion() {
         return clocVersion;
     }
 
-    public ClocParameter getElapsedSeconds() {
+    public String getElapsedSeconds() {
         return elapsedSeconds;
     }
 
-    public ClocParameter getFilesCount() {
+    public int getFilesCount() {
         return filesCount;
     }
 
-    public ClocParameter getLinesCount() {
+    public int getLinesCount() {
         return linesCount;
     }
 
-    public ClocParameter getFilesPerSecond() {
+    public String getFilesPerSecond() {
         return filesPerSecond;
     }
 
-    public ClocParameter getLinesPerSecond() {
+    public String getLinesPerSecond() {
         return linesPerSecond;
     }
 
-    public ClocParameter getReportFile() {
+    public String getReportFile() {
         return reportFile;
     }
 }

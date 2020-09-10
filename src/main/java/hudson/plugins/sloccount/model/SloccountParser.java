@@ -1,11 +1,11 @@
 package hudson.plugins.sloccount.model;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jenkins.MasterToSlaveFileCallable;
 import hudson.plugins.sloccount.model.cloc.ClocReport;
 import hudson.plugins.sloccount.util.FileFinder;
 import hudson.remoting.VirtualChannel;
 
-import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,7 +26,10 @@ public class SloccountParser extends
 
     private final String encoding;
     private final String filePattern;
-    private transient PrintStream logger = null;
+    @SuppressFBWarnings(
+            value = "URF_UNREAD_FIELD",
+            justification = "This logger field may only be used in debug builds, when LOG_ENABLED is true."
+    )    private transient PrintStream logger = null;
     private final boolean commentIsCode;
 
     public SloccountParser(String encoding, String filePattern, PrintStream logger,
@@ -80,8 +83,9 @@ public class SloccountParser extends
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             // Try cloc report file first, XML has precise structure
-            ClocReport.parse(file).toSloccountReport(report, commentIsCode);
-        } catch (JAXBException e) {
+            final ClocReport clocReport = ClocReport.parse(file);
+            clocReport.toSloccountReport(report, commentIsCode);
+        } catch (IOException e) {
             if(LOG_ENABLED && (this.logger != null)){
                 this.logger.println("Parsing of cloc format unsuccessful, trying SLOCCount format: " + e);
             }

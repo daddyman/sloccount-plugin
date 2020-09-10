@@ -1,6 +1,6 @@
 package hudson.plugins.sloccount.model.cloc;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import java.io.Serializable;
 
 /**
@@ -12,13 +12,13 @@ import java.io.Serializable;
 public class ClocTotal implements Serializable {
     private static final long serialVersionUID = 1;
 
-    @XmlAttribute
+    @XStreamAsAttribute
     private final int blank;
 
-    @XmlAttribute
+    @XStreamAsAttribute
     private final int comment;
 
-    @XmlAttribute
+    @XStreamAsAttribute
     private final int code;
 
     public ClocTotal(int blank, int comment, int code) {

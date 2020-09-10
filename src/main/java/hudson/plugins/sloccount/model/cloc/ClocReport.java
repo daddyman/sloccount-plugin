@@ -2,15 +2,11 @@ package hudson.plugins.sloccount.model.cloc;
 
 import hudson.plugins.sloccount.model.SloccountReportInterface;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.thoughtworks.xstream.XStream;
+
 import java.io.File;
 import java.io.Serializable;
+import java.io.IOException;
 
 /**
  * Cloc report parser and the parsed file.
@@ -18,15 +14,11 @@ import java.io.Serializable;
  * @author Michal Turek
  * @since 1.20
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "results")
 public class ClocReport implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @XmlElement(name = "header", type = ClocHeader.class)
     private final ClocHeader header;
 
-    @XmlElement(name = "files", type = ClocFiles.class)
     private final ClocFiles files;
 
     /**
@@ -59,12 +51,18 @@ public class ClocReport implements Serializable {
      *
      * @param file the file to be parsed
      * @return the content of the parsed file in form of a report
-     * @throws javax.xml.bind.JAXBException if a XML related error occurs
+     * @throws javax.xml.bind.IOException if a XML related error occurs
      */
-    public static ClocReport parse(File file) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(ClocReport.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (ClocReport) unmarshaller.unmarshal(file);
+    public static ClocReport parse(File file) throws IOException {
+        try {
+            final XStream xstream = new XStream();
+            xstream.alias("results", ClocReport.class);
+            xstream.processAnnotations(ClocReport.class);
+
+            return (ClocReport) xstream.fromXML(file);
+        } catch (Exception ex) {
+            throw new IOException("Failed to deserialize cloc report", ex);
+        }
     }
 
     /**
@@ -72,10 +70,10 @@ public class ClocReport implements Serializable {
      *
      * @param report        output report
      * @param commentIsCode include comments to the measured lines
-     * @throws JAXBException if the report has unexpected structure
+     * @throws IOException if the report has unexpected structure
      */
     public void toSloccountReport(SloccountReportInterface report, boolean commentIsCode)
-            throws JAXBException {
+            throws IOException {
         try {
             for (ClocFile file : files.getFiles()) {
                 // Get rid of Microsoft's incompatibility once and forever
@@ -93,7 +91,7 @@ public class ClocReport implements Serializable {
                 report.add(filePath, file.getLanguage(), moduleName, lineCount, file.getComment());
             }
         } catch (RuntimeException e) {
-            throw new JAXBException("Broken cloc report file: " + e, e);
+            throw new IOException("Broken cloc report file: " + e, e);
         }
     }
 }

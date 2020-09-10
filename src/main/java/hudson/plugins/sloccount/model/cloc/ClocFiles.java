@@ -1,6 +1,7 @@
 package hudson.plugins.sloccount.model.cloc;
 
-import javax.xml.bind.annotation.XmlElement;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,10 +14,10 @@ import java.util.List;
 public class ClocFiles implements Serializable {
     private static final long serialVersionUID = 1;
 
-    @XmlElement(name = "file", type = ClocFile.class)
+    @XStreamImplicit(itemFieldName="file")
     private final List<ClocFile> files;
 
-    @XmlElement(name = "total", type = ClocTotal.class)
+    @XStreamAlias("total")
     private final ClocTotal total;
 
     /**
